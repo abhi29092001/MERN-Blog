@@ -1,6 +1,7 @@
 // 4000 port
 // mongodb+srv://abhi:123@cluster0.flxoyox.mongodb.net/?retryWrites=true&w=majority
 // salt = "hsjhgyuagyguyvdj234bhbk"
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -15,7 +16,6 @@ const uploadMiddleware = multer({ dest: "uploads/" });
 const fs = require("fs");
 
 const salt = bcrypt.genSaltSync(10);
-const secret = "asdfe45we45w345wegw345werjktjwertkj";
 
 app.use(
   cors({ credentials: true, origin: "https://blog-app-dev.netlify.app" })
@@ -48,13 +48,18 @@ app.post("/login", async (req, res) => {
   const passOk = bcrypt.compareSync(password, userDoc.password);
   if (passOk) {
     // logged in
-    jwt.sign({ username, id: userDoc._id }, secret, {}, (err, token) => {
-      if (err) throw err;
-      res.cookie("token", token).json({
-        id: userDoc._id,
-        username,
-      });
-    });
+    jwt.sign(
+      { username, id: userDoc._id },
+      process.env.SECRET,
+      {},
+      (err, token) => {
+        if (err) throw err;
+        res.cookie("token", token).json({
+          id: userDoc._id,
+          username,
+        });
+      }
+    );
   } else {
     res.status(400).json("wrong credentials");
   }
@@ -62,7 +67,7 @@ app.post("/login", async (req, res) => {
 
 app.get("/profile", (req, res) => {
   const { token } = req.cookies;
-  jwt.verify(token, secret, {}, (err, info) => {
+  jwt.verify(token, process.env.SECRET, {}, (err, info) => {
     if (err) throw err;
     res.json(info);
   });
@@ -80,7 +85,7 @@ app.post("/post", uploadMiddleware.single("file"), async (req, res) => {
   fs.renameSync(path, newPath);
 
   const { token } = req.cookies;
-  jwt.verify(token, secret, {}, async (err, info) => {
+  jwt.verify(token, process.env.SECRET, {}, async (err, info) => {
     if (err) throw err;
     const { title, summary, content } = req.body;
     const postDoc = await Post.create({
@@ -105,7 +110,7 @@ app.put("/post", uploadMiddleware.single("file"), async (req, res) => {
   }
 
   const { token } = req.cookies;
-  jwt.verify(token, secret, {}, async (err, info) => {
+  jwt.verify(token, process.env.SECRET, {}, async (err, info) => {
     if (err) throw err;
     const { id, title, summary, content } = req.body;
     const postDoc = await Post.findById(id);
