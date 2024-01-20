@@ -45,7 +45,10 @@ export default function PostPage() {
         </div>
       )}
       <div className="image">
-        <img src={`https://blog-app-ud2h.onrender.com/${postInfo.cover}`} alt="" />
+        <img
+          src={`https://blog-app-ud2h.onrender.com/${postInfo.cover}`}
+          alt=""
+        />
       </div>
       <div
         className="content"

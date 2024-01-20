@@ -18,7 +18,11 @@ const fs = require("fs");
 const salt = bcrypt.genSaltSync(10);
 
 app.use(
-  cors({ credentials: true, origin: "https://blog-app-dev.netlify.app" })
+  cors({
+    credentials: true,
+    origin: "https://blog-app-dev.netlify.app",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  })
 );
 app.use(express.json());
 app.use(cookieParser());
