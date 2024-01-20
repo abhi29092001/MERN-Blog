@@ -15,7 +15,7 @@ export default function Post({
       <div className="image">
         <Link to={`/post/${_id}`}>
           <img
-            src={"http://localhost:4000/" + cover}
+            src={"https://blog-app-ud2h.onrender.com/" + cover}
             style={{ width: "380px", height: "180px" }}
             alt=""
           />
